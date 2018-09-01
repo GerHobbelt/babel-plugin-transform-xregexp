@@ -1,4 +1,3 @@
 {
-  "presets": ["es2015"],
-  "plugins": ["transform-runtime"],
+  "plugins": ["@gerhobbelt/babel-plugin-transform-runtime"],
 }
