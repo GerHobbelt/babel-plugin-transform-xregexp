@@ -1,11 +1,11 @@
-var babel = require('babel-core')
+var babel = require('@gerhobbelt/babel-core')
 var chalk = require('chalk')
 var clear = require('clear')
 var diff = require('diff')
 var fs = require('fs')
 var path = require('path')
 
-require('babel-register')
+require('@gerhobbelt/babel-register')
 
 var pluginPath = require.resolve('../src')
 

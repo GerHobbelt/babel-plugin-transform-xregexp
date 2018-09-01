@@ -1,4 +1,4 @@
-import XRegExp from 'xregexp'
+import XRegExp from '@gerhobbelt/xregexp'
 
 function evaluateArg ({path, index, fallback, fallbackTrigger}) {
   const args = path.get('arguments')
