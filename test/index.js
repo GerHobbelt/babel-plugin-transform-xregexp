@@ -31,7 +31,13 @@ function runTest (dir) {
     plugins: [pluginPath]
   })
 
-  var expected = fs.readFileSync(dir.path + '/expected.js', 'utf-8')
+  var expected;
+  if (fs.existsSync(dir.path + '/expected.js')) {
+    expected = fs.readFileSync(dir.path + '/expected.js', 'utf-8')
+  } else {
+    expected = '' + output.code
+    fs.writeFileSync(dir.path + '/expected.js', expected, 'utf-8')
+  }
 
   function normalizeLines (str) {
     var trimmed = str.trimRight().replace(/\r\n/g, '\n')
@@ -45,10 +51,10 @@ function runTest (dir) {
   .forEach(function (part) {
     var value = part.value
     if (part.added) {
-      value = chalk.green(part.value)
+      value = "+added:   " + chalk.green(part.value)
       exitCode = 1
     } else if (part.removed) {
-      value = chalk.red(part.value)
+      value = "-removed: " + chalk.red(part.value)
       exitCode = 1
     }
 

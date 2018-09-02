@@ -1,18 +1,26 @@
-import XRegExp from '@gerhobbelt/xregexp';
+"use strict";
 
-function evaluateArg({
-  path,
-  index,
-  fallback,
-  fallbackTrigger
-}) {
-  const args = path.get('arguments');
+var _interopRequireDefault = require("@gerhobbelt/babel-runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _xregexp = _interopRequireDefault(require("@gerhobbelt/xregexp"));
+
+function evaluateArg(_ref) {
+  var path = _ref.path,
+      index = _ref.index,
+      fallback = _ref.fallback,
+      fallbackTrigger = _ref.fallbackTrigger;
+  var args = path.get('arguments');
 
   if (args.length < index + 1) {
     return fallback;
   }
 
-  const arg = args[index].evaluate();
+  var arg = args[index].evaluate();
 
   if (!arg.confident || typeof arg.value !== 'string') {
     return;
@@ -26,11 +34,11 @@ function getPattern(path) {
     return '(?:)';
   }
 
-  const firstArg = path.node.arguments[0];
+  var firstArg = path.node.arguments[0];
 
   if (firstArg.type === 'TemplateLiteral' && firstArg.quasis.length === 1) {
     // TODO handle substitutions
-    const raw = firstArg.quasis[0].value.raw; // Handle \\\\1 -> \\1. In templates \\1 should be used instead of
+    var raw = firstArg.quasis[0].value.raw; // Handle \\\\1 -> \\1. In templates \\1 should be used instead of
     // \1 since \1 is treated as an octal number, which is not allowed
     // in template strings. Copied from
     // https://github.com/DmitrySoshnikov/babel-plugin-transform-modern-regexp/blob/78274325c7d0da329f7057e8f094a1ccae06a968/index.js#L150-L153
@@ -39,7 +47,7 @@ function getPattern(path) {
   }
 
   return evaluateArg({
-    path,
+    path: path,
     index: 0,
     fallback: '(?:)',
     fallbackTrigger: ''
@@ -48,21 +56,21 @@ function getPattern(path) {
 
 function getFlags(path) {
   return evaluateArg({
-    path,
+    path: path,
     index: 1,
     fallback: ''
   });
 }
 
 function createRegExpLiteral(path, t) {
-  const pattern = getPattern(path);
-  const flags = getFlags(path);
+  var pattern = getPattern(path);
+  var flags = getFlags(path);
 
   if (pattern == null || flags == null) {
     return;
   }
 
-  const xregexp = new XRegExp(pattern, flags);
+  var xregexp = new _xregexp.default(pattern, flags);
   return t.regExpLiteral(xregexp.source, xregexp.flags);
 }
 
@@ -73,55 +81,43 @@ function maybeReplaceWithRegExpLiteral(path, t) {
     return;
   }
 
-  const regExpLiteral = createRegExpLiteral(path, t);
+  var regExpLiteral = createRegExpLiteral(path, t);
 
   if (regExpLiteral) {
     path.replaceWith(regExpLiteral);
   }
 }
 
-export default function ({
-  types: t
-}) {
+function _default(_ref2) {
+  var t = _ref2.types;
   return {
     visitor: {
-      NewExpression(path) {
+      NewExpression: function NewExpression(path) {
         maybeReplaceWithRegExpLiteral(path, t);
       },
-
-      CallExpression(path) {
+      CallExpression: function CallExpression(path) {
         // equivalent to `new RegExp()` according to §21.2.3
         maybeReplaceWithRegExpLiteral(path, t);
       },
-
-      RegExpLiteral(path) {
-        const {
-          node
-        } = path;
-        const xregexp = XRegExp(node.pattern, node.flags);
-        const {
-          source,
-          flags
-        } = xregexp;
+      RegExpLiteral: function RegExpLiteral(path) {
+        var node = path.node;
+        var xregexp = (0, _xregexp.default)(node.pattern, node.flags);
+        var source = xregexp.source,
+            flags = xregexp.flags;
 
         if (source !== node.pattern || flags !== node.flags) {
           path.replaceWith(t.RegExpLiteral(source, flags));
         }
       },
-
-      MemberExpression(path) {
-        const {
-          node: {
-            object,
-            property
-          }
-        } = path;
+      MemberExpression: function MemberExpression(path) {
+        var _path$node = path.node,
+            object = _path$node.object,
+            property = _path$node.property;
 
         if (object.type === 'RegExpLiteral' && property.name === 'source') {
           path.replaceWith(t.StringLiteral(object.pattern));
         }
       }
-
     }
   };
 }

@@ -1,23 +1,25 @@
 {
   "name": "@gerhobbelt/babel-plugin-transform-xregexp",
-  "version": "1.0.0-1",
+  "version": "1.0.0-2",
   "description": "Use XRegExp syntax in your regular expressions",
   "repository": "https://github.com/josephfrazier/babel-plugin-transform-xregexp",
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "src/index.js",
   "files": [
     "dist/"
   ],
   "dependencies": {
-    "@gerhobbelt/babel-runtime": "7.0.0-beta.530006",
-    "@gerhobbelt/xregexp": "4.1.1-29"
+    "@gerhobbelt/babel-runtime": "7.0.0-14",
+    "@gerhobbelt/xregexp": "4.2.0-30"
   },
   "devDependencies": {
-    "@gerhobbelt/babel-cli": "^7.0.0-beta.530006",
-    "@gerhobbelt/babel-core": "^7.0.0-beta.530006",
-    "@gerhobbelt/babel-plugin-transform-runtime": "^7.0.0-beta.530006",
-    "@gerhobbelt/babel-preset-es2015": "^7.0.0-beta.530006",
-    "@gerhobbelt/babel-register": "^7.0.0-beta.530006",
+    "@gerhobbelt/babel-cli": "7.0.0-14",
+    "@gerhobbelt/babel-core": "7.0.0-14",
+    "@gerhobbelt/babel-plugin-transform-runtime": "7.0.0-14",
+    "@gerhobbelt/babel-preset-env": "^7.0.0-14",
+    "@gerhobbelt/babel-preset-es2015": "7.0.0-14",
+    "@gerhobbelt/babel-register": "7.0.0-14",
     "chalk": "^2.4.1",
     "clear": "0.1.0",
     "diff": "^3.5.0",
